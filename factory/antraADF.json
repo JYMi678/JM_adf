@@ -1,0 +1,9 @@
+{
+	"name": "antraADF",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6ee26fdb-e81d-40e0-844b-f46a9df7c478",
+		"tenantId": "a55a884c-ff1a-4f03-902d-2541fc8d31d4"
+	}
+}
