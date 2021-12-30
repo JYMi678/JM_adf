@@ -1,0 +1,12 @@
+{
+	"name": "ODS_Customers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase_ODS_WWIdb",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
