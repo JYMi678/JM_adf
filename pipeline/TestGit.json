@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "joinPeopleAndCustomers",
+				"name": "SCD_DIMcustomer",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "joinPeopleAndCustomers",
+						"referenceName": "SCD_DIMcustomer",
 						"type": "DataFlowReference"
 					},
 					"compute": {

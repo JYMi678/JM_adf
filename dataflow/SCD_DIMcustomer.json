@@ -1,0 +1,64 @@
+{
+	"name": "SCD_DIMcustomer",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_staging_Customers",
+						"type": "DatasetReference"
+					},
+					"name": "odsStagingCustomers"
+				},
+				{
+					"dataset": {
+						"referenceName": "IN_DIM_Customers",
+						"type": "DatasetReference"
+					},
+					"name": "IntegrationCustomers"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "IN_DIM_Customers",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "IN_DIM_Customers",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "addingCurrentFlag"
+				},
+				{
+					"name": "Select1"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "ExistingRows"
+				},
+				{
+					"name": "Select2"
+				},
+				{
+					"name": "DerivedColumn1"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tCustomerKey as integer,\n\t\tCustomerID as integer,\n\t\tCustomerName as string,\n\t\tBillToCustomer as string,\n\t\tPrimaryContactPerson as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tDeliveryPostalCode as string,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> odsStagingCustomers\nsource(output(\n\t\tCustomerKey as integer,\n\t\tCustomerID as integer,\n\t\tCustomerName as string,\n\t\tBillToCustomer as string,\n\t\tPrimaryContactPerson as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tDeliveryPostalCode as string,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentFlag as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> IntegrationCustomers\nodsStagingCustomers derive(CurrentFlag = 1) ~> addingCurrentFlag\nIntegrationCustomers select(mapColumn(\n\t\told_CustomerKey = CustomerKey,\n\t\told_CustomerID = CustomerID,\n\t\told_CustomerName = CustomerName,\n\t\told_BillToCustomer = BillToCustomer,\n\t\told_PrimaryContactPerson = PrimaryContactPerson,\n\t\told_PhoneNumber = PhoneNumber,\n\t\told_FaxNumber = FaxNumber,\n\t\told_DeliveryPostalCode = DeliveryPostalCode,\n\t\told_ValidFrom = ValidFrom,\n\t\told_ValidTo = ValidTo,\n\t\told_CurrentFlag = CurrentFlag\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nodsStagingCustomers, Select1 lookup(CustomerID == old_CustomerID,\n\tmultiple: true,\n\tbroadcast: 'auto')~> Lookup1\nLookup1 filter(!isNull(old_CustomerID)) ~> ExistingRows\nExistingRows select(mapColumn(\n\t\told_CustomerKey,\n\t\told_CustomerID,\n\t\told_CustomerName,\n\t\told_BillToCustomer,\n\t\told_PrimaryContactPerson,\n\t\told_PhoneNumber,\n\t\told_FaxNumber,\n\t\told_DeliveryPostalCode,\n\t\told_ValidFrom,\n\t\told_ValidTo,\n\t\told_CurrentFlag\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select2\nSelect2 derive(old_CurrentFlag = 0) ~> DerivedColumn1\nDerivedColumn1 alterRow(updateIf(1 == 1)) ~> AlterRow1\naddingCurrentFlag sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tCustomerKey as integer,\n\t\tCustomerID as integer,\n\t\tCustomerName as string,\n\t\tBillToCustomer as string,\n\t\tPrimaryContactPerson as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tDeliveryPostalCode as string,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentFlag as integer\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tCustomerID,\n\t\tCustomerName,\n\t\tBillToCustomer,\n\t\tPrimaryContactPerson,\n\t\tPhoneNumber,\n\t\tFaxNumber,\n\t\tDeliveryPostalCode,\n\t\tValidFrom,\n\t\tValidTo,\n\t\tCurrentFlag\n\t)) ~> sink1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tCustomerKey as integer,\n\t\tCustomerID as integer,\n\t\tCustomerName as string,\n\t\tBillToCustomer as string,\n\t\tPrimaryContactPerson as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tDeliveryPostalCode as string,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentFlag as integer\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['CustomerKey'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tCustomerKey = old_CustomerKey,\n\t\tCustomerID = old_CustomerID,\n\t\tCustomerName = old_CustomerName,\n\t\tBillToCustomer = old_BillToCustomer,\n\t\tPrimaryContactPerson = old_PrimaryContactPerson,\n\t\tPhoneNumber = old_PhoneNumber,\n\t\tFaxNumber = old_FaxNumber,\n\t\tDeliveryPostalCode = old_DeliveryPostalCode,\n\t\tValidFrom = old_ValidFrom,\n\t\tValidTo = old_ValidTo,\n\t\tCurrentFlag = old_CurrentFlag\n\t)) ~> sink2"
+		}
+	}
+}
