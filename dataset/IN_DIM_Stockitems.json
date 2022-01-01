@@ -1,15 +1,15 @@
 {
-	"name": "ODS_Stockitems",
+	"name": "IN_DIM_Stockitems",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabase_ODS_WWIdb",
+			"referenceName": "AzureSqlDatabase_Integration_WWIdb",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "ID",
+				"name": "StockItemKey",
 				"type": "int",
 				"precision": 10
 			},
@@ -130,11 +130,15 @@
 				"name": "ValidTo",
 				"type": "datetime2",
 				"scale": 7
+			},
+			{
+				"name": "CurrentFlag",
+				"type": "bit"
 			}
 		],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "ODS_StockItems"
+			"table": "IN_DIM_StockItems"
 		}
 	}
 }
