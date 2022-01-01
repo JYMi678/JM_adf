@@ -287,7 +287,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "stockitem",
+						"referenceName": "SCD_DIMstockitem",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -311,7 +311,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "city",
+						"referenceName": "SCD_DIMcity",
 						"type": "DataFlowReference"
 					},
 					"compute": {
