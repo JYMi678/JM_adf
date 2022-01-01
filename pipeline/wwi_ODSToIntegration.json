@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "stockitem",
+				"name": "city",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "stockitem",
+						"referenceName": "city",
 						"type": "DataFlowReference"
 					},
 					"compute": {
