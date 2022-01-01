@@ -27,14 +27,6 @@
 				"type": "nvarchar"
 			},
 			{
-				"name": "CustomerCategory",
-				"type": "nvarchar"
-			},
-			{
-				"name": "BuyingGroup",
-				"type": "nvarchar"
-			},
-			{
 				"name": "PrimaryContactPerson",
 				"type": "nvarchar"
 			},
