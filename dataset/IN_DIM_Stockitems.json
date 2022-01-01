@@ -133,7 +133,8 @@
 			},
 			{
 				"name": "CurrentFlag",
-				"type": "bit"
+				"type": "int",
+				"precision": 10
 			}
 		],
 		"typeProperties": {
