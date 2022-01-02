@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "staging_FACTOrder",
+				"name": "createFACT_Order",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "staging_FACTOrder",
+						"referenceName": "createFACT_Order",
 						"type": "DataFlowReference"
 					},
 					"compute": {

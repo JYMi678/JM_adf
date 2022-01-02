@@ -1,5 +1,5 @@
 {
-	"name": "IN_DIM_Customers",
+	"name": "IN_DIM_Customer",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase_Integration_WWIdb",

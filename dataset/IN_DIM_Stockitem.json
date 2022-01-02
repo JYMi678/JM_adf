@@ -1,5 +1,5 @@
 {
-	"name": "IN_DIM_Stockitems",
+	"name": "IN_DIM_Stockitem",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase_Integration_WWIdb",

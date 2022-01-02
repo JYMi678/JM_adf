@@ -1,0 +1,80 @@
+{
+	"name": "createFACT_Order",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_staging_Orders",
+						"type": "DatasetReference"
+					},
+					"name": "odsStagingOrders"
+				},
+				{
+					"dataset": {
+						"referenceName": "IN_DIM_Stockitem",
+						"type": "DatasetReference"
+					},
+					"name": "DIMstockitem"
+				},
+				{
+					"dataset": {
+						"referenceName": "IN_DIM_City",
+						"type": "DatasetReference"
+					},
+					"name": "DIMcity"
+				},
+				{
+					"dataset": {
+						"referenceName": "IN_DIM_Customer",
+						"type": "DatasetReference"
+					},
+					"name": "DIMcustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "IN_FACT_Order",
+						"type": "DatasetReference"
+					},
+					"name": "finalfactorder"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectStockitem"
+				},
+				{
+					"name": "SelectOrder"
+				},
+				{
+					"name": "SelectCity"
+				},
+				{
+					"name": "SelectCustomer"
+				},
+				{
+					"name": "factorder1"
+				},
+				{
+					"name": "SelectOrder2"
+				},
+				{
+					"name": "factorder2"
+				},
+				{
+					"name": "SelectOrder3"
+				},
+				{
+					"name": "factorder3"
+				},
+				{
+					"name": "SelectOrder4"
+				}
+			],
+			"script": "source(output(\n\t\tWWIOrderID as integer,\n\t\tCityID as integer,\n\t\tCustomerID as integer,\n\t\tStockItemID as integer,\n\t\tOrderDate as date,\n\t\tPickingDate as timestamp,\n\t\tBackorderOrderID as integer,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tUnitPrice as decimal(18,2),\n\t\tTaxRate as decimal(18,3),\n\t\tTotalExcludingTax as decimal(18,3),\n\t\tTaxAmount as decimal(18,3),\n\t\tTotalIncludingTax as decimal(18,3)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> odsStagingOrders\nsource(output(\n\t\tStockItemKey as integer,\n\t\tStockItemID as integer,\n\t\tStockItemName as string,\n\t\tSupplierID as integer,\n\t\tColorID as integer,\n\t\tUnitPackageID as integer,\n\t\tOuterPackageID as integer,\n\t\tBrand as string,\n\t\tSize as string,\n\t\tLeadTimeDays as integer,\n\t\tQuantityPerOuter as integer,\n\t\tIsChillerStock as boolean,\n\t\tBarcode as string,\n\t\tTaxRate as decimal(18,3),\n\t\tUnitPrice as decimal(18,2),\n\t\tRecommendedRetailPrice as decimal(18,2),\n\t\tTypicalWeightPerUnit as decimal(18,3),\n\t\tMarketingComments as string,\n\t\tInternalComments as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tTags as string,\n\t\tSearchDetails as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentFlag as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DIMstockitem\nsource(output(\n\t\tCityKey as integer,\n\t\tCityID as integer,\n\t\tCityName as string,\n\t\tLocation as binary,\n\t\tLatestRecordedPopulation as long,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentFlag as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DIMcity\nsource(output(\n\t\tCustomerKey as integer,\n\t\tCustomerID as integer,\n\t\tCustomerName as string,\n\t\tBillToCustomer as string,\n\t\tPrimaryContactPerson as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tDeliveryPostalCode as string,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentFlag as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DIMcustomer\nDIMstockitem select(mapColumn(\n\t\tStockItemKey,\n\t\tStockItemID,\n\t\tStockItemName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectStockitem\nodsStagingOrders select(mapColumn(\n\t\tWWIOrderID,\n\t\tCityID,\n\t\tCustomerID,\n\t\tStockItemID,\n\t\tOrderDate,\n\t\tPickingDate,\n\t\tBackorderOrderID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate,\n\t\tTotalExcludingTax,\n\t\tTaxAmount,\n\t\tTotalIncludingTax\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrder\nDIMcity select(mapColumn(\n\t\tCityKey,\n\t\tCityID,\n\t\tCityName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCity\nDIMcustomer select(mapColumn(\n\t\tCustomerKey,\n\t\tCustomerID,\n\t\tCustomerName\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectCustomer\nSelectOrder, SelectStockitem join(SelectOrder@StockItemID == SelectStockitem@StockItemID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> factorder1\nfactorder1 select(mapColumn(\n\t\tWWIOrderID,\n\t\tCityID,\n\t\tCustomerID,\n\t\tStockItemKey,\n\t\tOrderDate,\n\t\tPickingDate,\n\t\tBackorderOrderID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate,\n\t\tTotalExcludingTax,\n\t\tTaxAmount,\n\t\tTotalIncludingTax\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrder2\nSelectOrder2, SelectCity join(SelectOrder2@CityID == SelectCity@CityID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> factorder2\nfactorder2 select(mapColumn(\n\t\tWWIOrderID,\n\t\tCityKey,\n\t\tCustomerID,\n\t\tStockItemKey,\n\t\tOrderDate,\n\t\tPickingDate,\n\t\tBackorderOrderID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate,\n\t\tTotalExcludingTax,\n\t\tTaxAmount,\n\t\tTotalIncludingTax\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrder3\nSelectOrder3, SelectCustomer join(SelectOrder3@CustomerID == SelectCustomer@CustomerID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> factorder3\nfactorder3 select(mapColumn(\n\t\tWWIOrderID,\n\t\tCityKey,\n\t\tCustomerKey,\n\t\tStockItemKey,\n\t\tOrderDate,\n\t\tPickingDate,\n\t\tBackorderOrderID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate,\n\t\tTotalExcludingTax,\n\t\tTaxAmount,\n\t\tTotalIncludingTax\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrder4\nSelectOrder4 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tOrderKey as integer,\n\t\tCityKey as integer,\n\t\tCustomerKey as integer,\n\t\tStockItemKey as integer,\n\t\tWWIOrderID as integer,\n\t\tOrderDate as date,\n\t\tPickingDate as timestamp,\n\t\tBackorderOrderID as integer,\n\t\tDescription as string,\n\t\tQuantity as integer,\n\t\tUnitPrice as decimal(18,2),\n\t\tTaxRate as decimal(18,3),\n\t\tTotalExcludingTax as decimal(18,3),\n\t\tTaxAmount as decimal(18,3),\n\t\tTotalIncludingTax as decimal(18,3)\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tCityKey,\n\t\tCustomerKey,\n\t\tStockItemKey,\n\t\tWWIOrderID,\n\t\tOrderDate,\n\t\tPickingDate,\n\t\tBackorderOrderID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate,\n\t\tTotalExcludingTax,\n\t\tTaxAmount,\n\t\tTotalIncludingTax\n\t)) ~> finalfactorder"
+		}
+	}
+}

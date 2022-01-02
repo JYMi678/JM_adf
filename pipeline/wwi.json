@@ -218,7 +218,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "OLTP_Cities",
+						"referenceName": "OLTP_Cit",
 						"type": "DatasetReference"
 					}
 				],

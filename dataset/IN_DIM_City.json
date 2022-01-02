@@ -1,5 +1,5 @@
 {
-	"name": "IN_DIM_Cities",
+	"name": "IN_DIM_City",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase_Integration_WWIdb",

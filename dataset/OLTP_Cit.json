@@ -1,5 +1,5 @@
 {
-	"name": "OLTP_Cities",
+	"name": "OLTP_Cit",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureSqlDatabase_WWIdb",
