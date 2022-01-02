@@ -1,5 +1,5 @@
 {
-	"name": "joinPeopleAndCustomers",
+	"name": "staging_DIMcustomer",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
