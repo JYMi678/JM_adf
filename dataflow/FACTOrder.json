@@ -1,0 +1,40 @@
+{
+	"name": "FACTOrder",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ODS_Orders",
+						"type": "DatasetReference"
+					},
+					"name": "odsOrders"
+				},
+				{
+					"dataset": {
+						"referenceName": "ODS_OrderLines",
+						"type": "DatasetReference"
+					},
+					"name": "odsOrderLines"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "SelectOrders"
+				},
+				{
+					"name": "SelectOrderLines"
+				},
+				{
+					"name": "Join1"
+				},
+				{
+					"name": "SelectOrder"
+				}
+			],
+			"script": "source(output(\n\t\tID as integer,\n\t\tOrderID as integer,\n\t\tCustomerID as integer,\n\t\tSalespersonPersonID as integer,\n\t\tPickedByPersonID as integer,\n\t\tContactPersonID as integer,\n\t\tBackorderOrderID as integer,\n\t\tOrderDate as date,\n\t\tExpectedDeliveryDate as date,\n\t\tCustomerPurchaseOrderNumber as string,\n\t\tIsUndersupplyBackordered as boolean,\n\t\tComments as string,\n\t\tDeliveryInstructions as string,\n\t\tInternalComments as string,\n\t\tPickingCompletedWhen as timestamp,\n\t\tLastEditedBy as integer,\n\t\tLastEditedWhen as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> odsOrders\nsource(output(\n\t\tID as integer,\n\t\tOrderLineID as integer,\n\t\tOrderID as integer,\n\t\tStockItemID as integer,\n\t\tDescription as string,\n\t\tPackageTypeID as integer,\n\t\tQuantity as integer,\n\t\tUnitPrice as decimal(18,2),\n\t\tTaxRate as decimal(18,3),\n\t\tPickedQuantity as integer,\n\t\tPickingCompletedWhen as timestamp,\n\t\tLastEditedBy as integer,\n\t\tLastEditedWhen as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> odsOrderLines\nodsOrders select(mapColumn(\n\t\tOrderID,\n\t\tCustomerID,\n\t\tBackorderOrderID,\n\t\tOrderDate,\n\t\tCustomerPurchaseOrderNumber,\n\t\tPickingCompletedWhen\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrders\nodsOrderLines select(mapColumn(\n\t\tOrderLineID,\n\t\tOrderID,\n\t\tStockItemID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrderLines\nSelectOrders, SelectOrderLines join(SelectOrders@OrderID == SelectOrderLines@OrderID,\n\tjoinType:'left',\n\tbroadcast: 'auto')~> Join1\nJoin1 select(mapColumn(\n\t\tWWIOrderID = SelectOrders@OrderID,\n\t\tCustomerID,\n\t\tBackorderOrderID,\n\t\tOrderDate,\n\t\tPickingDate = PickingCompletedWhen,\n\t\tStockItemID,\n\t\tDescription,\n\t\tQuantity,\n\t\tUnitPrice,\n\t\tTaxRate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectOrder"
+		}
+	}
+}
