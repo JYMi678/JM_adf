@@ -220,7 +220,7 @@
 				}
 			},
 			{
-				"name": "createFACT_Order1",
+				"name": "ITGtoDW",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
@@ -240,7 +240,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "createFACT_Order",
+						"referenceName": "ITGtoDW",
 						"type": "DataFlowReference"
 					},
 					"compute": {
