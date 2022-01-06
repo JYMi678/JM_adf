@@ -5,6 +5,9 @@
 			"referenceName": "AzureSqlDatabase1_WWIDWdb",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "DW"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

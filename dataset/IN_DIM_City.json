@@ -5,6 +5,9 @@
 			"referenceName": "AzureSqlDatabase_Integration_WWIdb",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "ITG"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

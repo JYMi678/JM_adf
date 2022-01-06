@@ -5,6 +5,9 @@
 			"referenceName": "AzureSqlDatabase_ODS_WWIdb",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "ODS"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

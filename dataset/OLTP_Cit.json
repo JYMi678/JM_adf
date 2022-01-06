@@ -5,6 +5,9 @@
 			"referenceName": "AzureSqlDatabase_WWIdb",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "OLTP"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [

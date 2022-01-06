@@ -1,0 +1,26 @@
+{
+	"name": "watermark",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase_WWIdb",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "control"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "WatermarkValue",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "watermarktable"
+		}
+	}
+}
