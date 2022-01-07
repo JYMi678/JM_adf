@@ -29,6 +29,70 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "LookupCurrentWaterMark",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "select max(LastEditedWhen) as NewWatermarkValue from Sales.Orders",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "OLTP_Orders",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "wwi",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "LookupLastWaterMark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "LookupCurrentWaterMark",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "wwi",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Startdate": {
+							"value": "@activity('LookupLastWaterMark').output",
+							"type": "Expression"
+						},
+						"Enddate": {
+							"value": "@activity('LookupCurrentWaterMark').output",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"annotations": []

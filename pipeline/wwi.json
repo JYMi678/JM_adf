@@ -7,6 +7,12 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
+						"activity": "copyOLTPToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "OLTPToODS",
 						"dependencyConditions": [
 							"Succeeded"
@@ -37,6 +43,12 @@
 				"name": "SCD_DIMstockitem",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
+					{
+						"activity": "copyOLTPToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
 					{
 						"activity": "OLTPToODS",
 						"dependencyConditions": [
@@ -100,6 +112,12 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
+						"activity": "copyOLTPToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "OLTPToODS",
 						"dependencyConditions": [
 							"Succeeded"
@@ -130,6 +148,12 @@
 				"name": "staging_FACTOrder",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
+					{
+						"activity": "copyOLTPToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
 					{
 						"activity": "OLTPToODS",
 						"dependencyConditions": [
@@ -249,8 +273,52 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "copyOLTPToODS",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[FilterOrders]",
+					"storedProcedureParameters": {
+						"Enddate": {
+							"value": {
+								"value": "@pipeline().parameters.Enddate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"Startdate": {
+							"value": {
+								"value": "@pipeline().parameters.Startdate",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase_WWIdb",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
+		"parameters": {
+			"Startdate": {
+				"type": "string"
+			},
+			"Enddate": {
+				"type": "string"
+			}
+		},
 		"annotations": []
 	}
 }
